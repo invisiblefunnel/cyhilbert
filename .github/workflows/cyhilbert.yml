@@ -1,0 +1,24 @@
+name: cyhilbert
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  cyhilbert:
+    strategy:
+      matrix:
+        python: ["3.10", "3.9", "3.8", "3.7"]
+        os: ["ubuntu-latest", "windows-latest", "macos-latest"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/checkout@v2
+      - run: pip install ".[tests]"
+      - run: python -m unittest -v tests/cyhilbert/test_cyhilbert.py
