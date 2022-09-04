@@ -1,6 +1,6 @@
 # cyhilbert
 
-A cythonized version of that one hilbert function you keep copy-pasting. See the original implementation of [Hilbert curves in O(log(n)) time](http://threadlocalmutex.com/?p=126).
+A cythonized version of that one hilbert function you keep copy-pasting. See the original implementation of [Hilbert curves in O(log(n)) time](http://threadlocalmutex.com/?p=126). Inputs must be in the range 0 to 2^16-1, inclusive.
 
 ```python
 from cyhilbert import hilbert, DIMS, BITS_PER_DIM, MAX

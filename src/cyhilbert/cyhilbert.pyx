@@ -4,8 +4,8 @@ MAX: int = DIMS ** BITS_PER_DIM - 1
 
 
 def hilbert(x: int, y: int) -> int:
-    assert 0 <= x <= MAX
-    assert 0 <= y <= MAX
+    # assert 0 <= x <= MAX
+    # assert 0 <= y <= MAX
     return _hilbert(x, y)
 
 
