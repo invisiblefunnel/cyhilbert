@@ -49,14 +49,12 @@ def hilbert(x: int, y: int) -> int:
     i0 = x ^ y
     i1 = b | (0xFFFF ^ (i0 | a))
 
-    i1 = (i1 | (i1 << 8)) & 0x00FF00FF
-    i1 = (i1 | (i1 << 4)) & 0x0F0F0F0F
-    i1 = (i1 | (i1 << 2)) & 0x33333333
-    i1 = (i1 | (i1 << 1)) & 0x55555555
+    return (interleave(i1) << 1) | interleave(i0)
 
-    i0 = (i0 | (i0 << 8)) & 0x00FF00FF
-    i0 = (i0 | (i0 << 4)) & 0x0F0F0F0F
-    i0 = (i0 | (i0 << 2)) & 0x33333333
-    i0 = (i0 | (i0 << 1)) & 0x55555555
 
-    return (i1 << 1) | i0
+cdef inline interleave(unsigned int x):
+    x = (x | (x << 8)) & 0x00FF00FF
+    x = (x | (x << 4)) & 0x0F0F0F0F
+    x = (x | (x << 2)) & 0x33333333
+    x = (x | (x << 1)) & 0x55555555
+    return x
