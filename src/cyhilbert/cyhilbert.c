@@ -1061,6 +1061,14 @@ static PyObject* __Pyx_PyInt_XorObjC(PyObject *op1, PyObject *op2, long intval, 
 
 /* PyIntBinop.proto */
 #if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_LshiftObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_LshiftObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceLshift(op1, op2) : PyNumber_Lshift(op1, op2))
+#endif
+
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
 #else
 #define __Pyx_PyInt_SubtractObjC(op1, op2, intval, inplace, zerodivision_check)\
@@ -1195,6 +1203,9 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 static CYTHON_INLINE unsigned int __Pyx_PyInt_As_unsigned_int(PyObject *);
 
 /* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value);
+
+/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
@@ -1224,6 +1235,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 
 /* Module declarations from 'cyhilbert' */
+static CYTHON_INLINE PyObject *__pyx_f_9cyhilbert_interleave(unsigned int); /*proto*/
 #define __Pyx_MODULE_NAME "cyhilbert"
 extern int __pyx_module_is_main_cyhilbert;
 int __pyx_module_is_main_cyhilbert = 0;
@@ -1371,6 +1383,7 @@ static PyObject *__pyx_pf_9cyhilbert_hilbert(CYTHON_UNUSED PyObject *__pyx_self,
   PyObject *__pyx_t_1 = NULL;
   unsigned int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -1700,92 +1713,31 @@ static PyObject *__pyx_pf_9cyhilbert_hilbert(CYTHON_UNUSED PyObject *__pyx_self,
  *     i0 = x ^ y
  *     i1 = b | (0xFFFF ^ (i0 | a))             # <<<<<<<<<<<<<<
  * 
- *     i1 = (i1 | (i1 << 8)) & 0x00FF00FF
+ *     return (interleave(i1) << 1) | interleave(i0)
  */
   __pyx_v_i1 = (__pyx_v_b | (0xFFFF ^ (__pyx_v_i0 | __pyx_v_a)));
 
   /* "cyhilbert.pyx":52
  *     i1 = b | (0xFFFF ^ (i0 | a))
  * 
- *     i1 = (i1 | (i1 << 8)) & 0x00FF00FF             # <<<<<<<<<<<<<<
- *     i1 = (i1 | (i1 << 4)) & 0x0F0F0F0F
- *     i1 = (i1 | (i1 << 2)) & 0x33333333
- */
-  __pyx_v_i1 = ((__pyx_v_i1 | (__pyx_v_i1 << 8)) & 0x00FF00FF);
-
-  /* "cyhilbert.pyx":53
+ *     return (interleave(i1) << 1) | interleave(i0)             # <<<<<<<<<<<<<<
  * 
- *     i1 = (i1 | (i1 << 8)) & 0x00FF00FF
- *     i1 = (i1 | (i1 << 4)) & 0x0F0F0F0F             # <<<<<<<<<<<<<<
- *     i1 = (i1 | (i1 << 2)) & 0x33333333
- *     i1 = (i1 | (i1 << 1)) & 0x55555555
- */
-  __pyx_v_i1 = ((__pyx_v_i1 | (__pyx_v_i1 << 4)) & 0x0F0F0F0F);
-
-  /* "cyhilbert.pyx":54
- *     i1 = (i1 | (i1 << 8)) & 0x00FF00FF
- *     i1 = (i1 | (i1 << 4)) & 0x0F0F0F0F
- *     i1 = (i1 | (i1 << 2)) & 0x33333333             # <<<<<<<<<<<<<<
- *     i1 = (i1 | (i1 << 1)) & 0x55555555
  * 
- */
-  __pyx_v_i1 = ((__pyx_v_i1 | (__pyx_v_i1 << 2)) & 0x33333333);
-
-  /* "cyhilbert.pyx":55
- *     i1 = (i1 | (i1 << 4)) & 0x0F0F0F0F
- *     i1 = (i1 | (i1 << 2)) & 0x33333333
- *     i1 = (i1 | (i1 << 1)) & 0x55555555             # <<<<<<<<<<<<<<
- * 
- *     i0 = (i0 | (i0 << 8)) & 0x00FF00FF
- */
-  __pyx_v_i1 = ((__pyx_v_i1 | (__pyx_v_i1 << 1)) & 0x55555555);
-
-  /* "cyhilbert.pyx":57
- *     i1 = (i1 | (i1 << 1)) & 0x55555555
- * 
- *     i0 = (i0 | (i0 << 8)) & 0x00FF00FF             # <<<<<<<<<<<<<<
- *     i0 = (i0 | (i0 << 4)) & 0x0F0F0F0F
- *     i0 = (i0 | (i0 << 2)) & 0x33333333
- */
-  __pyx_v_i0 = ((__pyx_v_i0 | (__pyx_v_i0 << 8)) & 0x00FF00FF);
-
-  /* "cyhilbert.pyx":58
- * 
- *     i0 = (i0 | (i0 << 8)) & 0x00FF00FF
- *     i0 = (i0 | (i0 << 4)) & 0x0F0F0F0F             # <<<<<<<<<<<<<<
- *     i0 = (i0 | (i0 << 2)) & 0x33333333
- *     i0 = (i0 | (i0 << 1)) & 0x55555555
- */
-  __pyx_v_i0 = ((__pyx_v_i0 | (__pyx_v_i0 << 4)) & 0x0F0F0F0F);
-
-  /* "cyhilbert.pyx":59
- *     i0 = (i0 | (i0 << 8)) & 0x00FF00FF
- *     i0 = (i0 | (i0 << 4)) & 0x0F0F0F0F
- *     i0 = (i0 | (i0 << 2)) & 0x33333333             # <<<<<<<<<<<<<<
- *     i0 = (i0 | (i0 << 1)) & 0x55555555
- * 
- */
-  __pyx_v_i0 = ((__pyx_v_i0 | (__pyx_v_i0 << 2)) & 0x33333333);
-
-  /* "cyhilbert.pyx":60
- *     i0 = (i0 | (i0 << 4)) & 0x0F0F0F0F
- *     i0 = (i0 | (i0 << 2)) & 0x33333333
- *     i0 = (i0 | (i0 << 1)) & 0x55555555             # <<<<<<<<<<<<<<
- * 
- *     return (i1 << 1) | i0
- */
-  __pyx_v_i0 = ((__pyx_v_i0 | (__pyx_v_i0 << 1)) & 0x55555555);
-
-  /* "cyhilbert.pyx":62
- *     i0 = (i0 | (i0 << 1)) & 0x55555555
- * 
- *     return (i1 << 1) | i0             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_long(((__pyx_v_i1 << 1) | __pyx_v_i0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_9cyhilbert_interleave(__pyx_v_i1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __pyx_t_3 = __Pyx_PyInt_LshiftObjC(__pyx_t_1, __pyx_int_1, 1, 0, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __pyx_f_9cyhilbert_interleave(__pyx_v_i0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_4 = PyNumber_Or(__pyx_t_3, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_4;
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
   /* "cyhilbert.pyx":7
@@ -1800,8 +1752,92 @@ static PyObject *__pyx_pf_9cyhilbert_hilbert(CYTHON_UNUSED PyObject *__pyx_self,
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
   __Pyx_AddTraceback("cyhilbert.hilbert", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "cyhilbert.pyx":55
+ * 
+ * 
+ * cdef inline interleave(unsigned int x):             # <<<<<<<<<<<<<<
+ *     x = (x | (x << 8)) & 0x00FF00FF
+ *     x = (x | (x << 4)) & 0x0F0F0F0F
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_9cyhilbert_interleave(unsigned int __pyx_v_x) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("interleave", 0);
+
+  /* "cyhilbert.pyx":56
+ * 
+ * cdef inline interleave(unsigned int x):
+ *     x = (x | (x << 8)) & 0x00FF00FF             # <<<<<<<<<<<<<<
+ *     x = (x | (x << 4)) & 0x0F0F0F0F
+ *     x = (x | (x << 2)) & 0x33333333
+ */
+  __pyx_v_x = ((__pyx_v_x | (__pyx_v_x << 8)) & 0x00FF00FF);
+
+  /* "cyhilbert.pyx":57
+ * cdef inline interleave(unsigned int x):
+ *     x = (x | (x << 8)) & 0x00FF00FF
+ *     x = (x | (x << 4)) & 0x0F0F0F0F             # <<<<<<<<<<<<<<
+ *     x = (x | (x << 2)) & 0x33333333
+ *     x = (x | (x << 1)) & 0x55555555
+ */
+  __pyx_v_x = ((__pyx_v_x | (__pyx_v_x << 4)) & 0x0F0F0F0F);
+
+  /* "cyhilbert.pyx":58
+ *     x = (x | (x << 8)) & 0x00FF00FF
+ *     x = (x | (x << 4)) & 0x0F0F0F0F
+ *     x = (x | (x << 2)) & 0x33333333             # <<<<<<<<<<<<<<
+ *     x = (x | (x << 1)) & 0x55555555
+ *     return x
+ */
+  __pyx_v_x = ((__pyx_v_x | (__pyx_v_x << 2)) & 0x33333333);
+
+  /* "cyhilbert.pyx":59
+ *     x = (x | (x << 4)) & 0x0F0F0F0F
+ *     x = (x | (x << 2)) & 0x33333333
+ *     x = (x | (x << 1)) & 0x55555555             # <<<<<<<<<<<<<<
+ *     return x
+ */
+  __pyx_v_x = ((__pyx_v_x | (__pyx_v_x << 1)) & 0x55555555);
+
+  /* "cyhilbert.pyx":60
+ *     x = (x | (x << 2)) & 0x33333333
+ *     x = (x | (x << 1)) & 0x55555555
+ *     return x             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_unsigned_int(__pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "cyhilbert.pyx":55
+ * 
+ * 
+ * cdef inline interleave(unsigned int x):             # <<<<<<<<<<<<<<
+ *     x = (x | (x << 8)) & 0x00FF00FF
+ *     x = (x | (x << 4)) & 0x0F0F0F0F
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("cyhilbert.interleave", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -2649,6 +2685,128 @@ static PyObject* __Pyx_PyInt_XorObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
 
 /* PyIntBinop */
 #if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_LshiftObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
+    (void)inplace;
+    (void)zerodivision_check;
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long a = PyInt_AS_LONG(op1);
+            if (likely(b < (long) (sizeof(long)*8) && a == (a << b) >> b) || !a) {
+                return PyInt_FromLong(a << b);
+            }
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a, x;
+#ifdef HAVE_LONG_LONG
+        const PY_LONG_LONG llb = intval;
+        PY_LONG_LONG lla, llx;
+#endif
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                default: return PyLong_Type.tp_as_number->nb_lshift(op1, op2);
+            }
+        }
+                x = a << b;
+#ifdef HAVE_LONG_LONG
+                if (unlikely(!(b < (long) (sizeof(long)*8) && a == x >> b)) && a) {
+                    lla = a;
+                    goto long_long;
+                }
+#else
+                if (likely(b < (long) (sizeof(long)*8) && a == x >> b) || !a)
+#endif
+            return PyLong_FromLong(x);
+#ifdef HAVE_LONG_LONG
+        long_long:
+                llx = lla << llb;
+                if (likely(lla == llx >> llb))
+            return PyLong_FromLongLong(llx);
+#endif
+        
+        
+    }
+    #endif
+    return (inplace ? PyNumber_InPlaceLshift : PyNumber_Lshift)(op1, op2);
+}
+#endif
+
+/* PyIntBinop */
+#if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_SubtractObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
     (void)inplace;
     (void)zerodivision_check;
@@ -3329,6 +3487,44 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to unsigned int");
     return (unsigned int) -1;
+}
+
+/* CIntToPy */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_unsigned_int(unsigned int value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const unsigned int neg_one = (unsigned int) -1, const_zero = (unsigned int) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(unsigned int) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(unsigned int) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(unsigned int) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(unsigned int) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(unsigned int) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(unsigned int),
+                                     little, !is_unsigned);
+    }
 }
 
 /* CIntToPy */
