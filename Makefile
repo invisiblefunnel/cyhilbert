@@ -1,16 +1,17 @@
 default: test
 
 test: install
-	python -m unittest tests/**/*.py
+	python -m unittest tests/*.py
 
-install: build
+install: clean type-check
 	pip install -e ".[tests]"
 
-build: clean src/cyhilbert/cyhilbert.c
+type-check:
+	mypy cyhilbert
+
+build: clean
+	python setup.py build_ext --inplace
 	python setup.py sdist bdist_wheel
 
-src/cyhilbert/cyhilbert.c:
-	cythonize -3 src/cyhilbert/cyhilbert.pyx
-
 clean:
-	rm -rf build dist *.egg-info cyhilbert.*.so src/cyhilbert/cyhilbert.c
+	rm -rf build dist *.egg-info *.so cyhilbert/*.c
