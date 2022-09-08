@@ -21,4 +21,5 @@ jobs:
           python-version: ${{ matrix.python }}
       - uses: actions/checkout@v2
       - run: pip install ".[tests]"
-      - run: python -m unittest -v tests/cyhilbert/test_cyhilbert.py
+      - run: mypy cyhilbert
+      - run: python -m unittest -v tests/test_cyhilbert.py
