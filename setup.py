@@ -8,7 +8,7 @@ with open("README.md", "r") as f:
 
 setup(
     name="cyhilbert",
-    version="1.3.0",
+    version="1.3.1",
     author="Danny Whalen",
     author_email="daniel.r.whalen@gmail.com",
     url="https://github.com/invisiblefunnel/cyhilbert",
